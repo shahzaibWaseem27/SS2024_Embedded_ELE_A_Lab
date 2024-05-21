@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+</declaration>
+	<template>
+		<name>Traffic</name>
+		<location id="id0" x="-306" y="-255">
+			<name x="-316" y="-289">Red</name>
+		</location>
+		<location id="id1" x="-212" y="-136">
+			<name x="-212" y="-127">Yellow</name>
+		</location>
+		<location id="id2" x="-399" y="-144">
+			<name x="-425" y="-127">Green</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id3">
+			<source ref="id2"/>
+			<target ref="id0"/>
+		</transition>
+		<transition id="id4">
+			<source ref="id1"/>
+			<target ref="id2"/>
+		</transition>
+		<transition id="id5">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="-263" y="-238">t = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Car</name>
+		<declaration>process Car() {
+    state:
+        Driving,
+        Waiting
+    init Driving;
+    trans:
+        Driving -&gt; Waiting { sync red?;},
+        Waiting -&gt; Driving { sync green?;}
+}
+</declaration>
+		<location id="id6" x="-816" y="-127">
+			<name x="-892" y="-153">Waiting</name>
+		</location>
+		<location id="id7" x="-612" y="-127">
+			<name x="-595" y="-153">Driving</name>
+		</location>
+		<init ref="id6"/>
+		<transition id="id8">
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<nail x="-637" y="-42"/>
+			<nail x="-799" y="-42"/>
+		</transition>
+		<transition id="id9">
+			<source ref="id6"/>
+			<target ref="id7"/>
+		</transition>
+	</template>
+	<template>
+		<name>Green</name>
+		<location id="id10" x="-314" y="-60">
+			<name x="-365" y="-93">Idle</name>
+		</location>
+		<location id="id11" x="-17" y="-59">
+			<name x="0" y="-93">Active</name>
+		</location>
+		<init ref="id10"/>
+		<transition id="id12">
+			<source ref="id11"/>
+			<target ref="id10"/>
+			<label kind="guard" x="-246" y="68">t = 60</label>
+			<label kind="synchronisation" x="-204" y="93">green!</label>
+			<label kind="assignment" x="-170" y="68">t = 0</label>
+			<nail x="-68" y="42"/>
+			<nail x="-280" y="42"/>
+		</transition>
+		<transition id="id13">
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-229" y="-93">t = 0</label>
+			<label kind="synchronisation" x="-204" y="-119">green!</label>
+			<label kind="assignment" x="-170" y="-93">t = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Red</name>
+		<location id="id14" x="-17" y="-59">
+			<name x="0" y="-93">Active</name>
+		</location>
+		<location id="id15" x="-314" y="-60">
+			<name x="-365" y="-93">Idle</name>
+		</location>
+		<init ref="id15"/>
+		<transition id="id16">
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="guard" x="-246" y="68">t = 30</label>
+			<label kind="synchronisation" x="-204" y="93">red!</label>
+			<label kind="assignment" x="-170" y="68">t = 0</label>
+			<nail x="-68" y="42"/>
+			<nail x="-280" y="42"/>
+		</transition>
+		<transition id="id17">
+			<source ref="id15"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-229" y="-93">t = 0</label>
+			<label kind="synchronisation" x="-204" y="-119">red!</label>
+			<label kind="assignment" x="-170" y="-93">t = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">Yellow</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id18" x="-17" y="-59">
+			<name x="0" y="-93">Active</name>
+		</location>
+		<location id="id19" x="-314" y="-60">
+			<name x="-365" y="-93">Idle</name>
+		</location>
+		<init ref="id19"/>
+		<transition id="id20">
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="guard" x="-246" y="68">t = 10</label>
+			<label kind="synchronisation" x="-204" y="93">yellow!</label>
+			<label kind="assignment" x="-170" y="68">t = 0</label>
+			<nail x="-68" y="42"/>
+			<nail x="-280" y="42"/>
+		</transition>
+		<transition id="id21">
+			<source ref="id19"/>
+			<target ref="id18"/>
+			<label kind="guard" x="-229" y="-93">t = 0</label>
+			<label kind="synchronisation" x="-204" y="-119">yellow!</label>
+			<label kind="assignment" x="-170" y="-93">t = 0</label>
+		</transition>
+	</template>
+	<system>clock t; 
+chan green, yellow, red;
+
+
+process GreenLight() {
+    state:
+        Idle,
+        Active { t &lt;= 60 }
+    init Idle;
+    trans:
+        Idle -&gt; Active { guard t == 0; sync green!; assign t = 0; },
+        Active -&gt; Idle { guard t == 60; sync green!; assign t = 0; }
+}
+
+process YellowLight() {
+    state:
+        Idle,
+        Active { t &lt;= 10 }
+    init Idle;
+    trans:
+        Idle -&gt; Active { guard t == 0; sync yellow!; assign t = 0; },
+        Active -&gt; Idle { guard t == 10; sync yellow!; assign t = 0; }
+}
+
+process RedLight() {
+    state:
+        Idle,
+        Active { t &lt;= 30 }
+    init Idle;
+    trans:
+        Idle -&gt; Active { guard t == 0; sync red!; assign t = 0; },
+        Active -&gt; Idle { guard t == 30; sync red!; assign t = 0; }
+}
+
+
+system GreenLight, YellowLight, RedLight;
+</system>
+	<queries>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+	</queries>
+</nta>
