@@ -38,6 +38,8 @@
 				- increment j
 
 			- increment i
+	
+	- Or do this: allow the first car in the queue to move by removing it from the queue 
 
 	- Check for any incoming cars that now need to be added to the queue 
 
