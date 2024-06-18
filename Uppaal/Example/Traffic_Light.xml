@@ -26,6 +26,7 @@
 		<transition id="id5">
 			<source ref="id0"/>
 			<target ref="id1"/>
+			<label kind="synchronisation" x="-238" y="-212">yellow!</label>
 			<label kind="assignment" x="-263" y="-238">t = 0</label>
 		</transition>
 	</template>
@@ -135,7 +136,7 @@
 			<source ref="id19"/>
 			<target ref="id18"/>
 			<label kind="guard" x="-229" y="-93">t = 0</label>
-			<label kind="synchronisation" x="-204" y="-119">yellow!</label>
+			<label kind="synchronisation" x="-204" y="-119">yellow?</label>
 			<label kind="assignment" x="-170" y="-93">t = 0</label>
 		</transition>
 	</template>
