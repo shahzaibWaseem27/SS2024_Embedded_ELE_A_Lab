@@ -160,9 +160,10 @@ void Car_P(void *pvParameters) {
 
   while (1) {
 
-    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY); // get up-to-date contents of currently passing car
+    if(xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY) == pdPASS){  // get up-to-date contents of currently passing car
 
-    if(currentlyPassingCar.ID == 'X'){
+
+      if(currentlyPassingCar.ID == 'X'){
 
       currentlyPassingCar = car_P;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
@@ -170,15 +171,17 @@ void Car_P(void *pvParameters) {
       currentlyPassingCar = no_Car;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
 
-    } else {
+      } else {
 
-      if(carsDontIntersect(currentlyPassingCar, car_P)){
+        if(carsDontIntersect(currentlyPassingCar, car_P)){
 
-        currentlyPassingCar = car_P;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-        vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-        currentlyPassingCar = no_Car;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          currentlyPassingCar = car_P;
+          xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
+          currentlyPassingCar = no_Car;
+          xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+
+        }
 
       }
 
@@ -208,9 +211,9 @@ void Car_Q(void *pvParameters) {
 
   while (1) {
 
-    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY); // get up-to-date contents of currently passing car
+    if(xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY) == pdPASS){  // get up-to-date contents of currently passing car
 
-    if(currentlyPassingCar.ID == 'X'){
+      if(currentlyPassingCar.ID == 'X'){
 
       currentlyPassingCar = car_Q;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
@@ -218,19 +221,21 @@ void Car_Q(void *pvParameters) {
       currentlyPassingCar = no_Car;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
 
-    } else {
+      } else {
 
-      if(carsDontIntersect(currentlyPassingCar, car_Q)){
+        if(carsDontIntersect(currentlyPassingCar, car_Q)){
 
-        currentlyPassingCar = car_Q;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-        vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-        currentlyPassingCar = no_Car;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          currentlyPassingCar = car_Q;
+          xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
+          currentlyPassingCar = no_Car;
+          xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+
+        }
 
       }
 
-    }
+    } 
 
   }
 
@@ -254,9 +259,9 @@ void Car_R(void *pvParameters) {
 
   while (1) {
 
-    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY); // get up-to-date contents of currently passing car
+    if(xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY) == pdPASS){  // get up-to-date contents of currently passing car
 
-    if(currentlyPassingCar.ID == 'X'){
+      if(currentlyPassingCar.ID == 'X'){
 
       currentlyPassingCar = car_R;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
@@ -264,15 +269,17 @@ void Car_R(void *pvParameters) {
       currentlyPassingCar = no_Car;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
 
-    } else {
+      } else {
 
-      if(carsDontIntersect(currentlyPassingCar, car_R)){
+        if(carsDontIntersect(currentlyPassingCar, car_R)){
 
-        currentlyPassingCar = car_R;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-        vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-        currentlyPassingCar = no_Car;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          currentlyPassingCar = car_R;
+          xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
+          currentlyPassingCar = no_Car;
+          xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+
+        }
 
       }
 
@@ -301,9 +308,9 @@ void Car_S(void *pvParameters) {
 
   while (1) {
 
-    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY); // get up-to-date contents of currently passing car
+    if(xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY) == pdPASS){ // get up-to-date contents of currently passing car
 
-    if(currentlyPassingCar.ID == 'X'){
+      if(currentlyPassingCar.ID == 'X'){
 
       currentlyPassingCar = car_S;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
@@ -311,20 +318,22 @@ void Car_S(void *pvParameters) {
       currentlyPassingCar = no_Car;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
 
-    } else {
+      } else {
 
-      if(carsDontIntersect(currentlyPassingCar, car_S)){
+        if(carsDontIntersect(currentlyPassingCar, car_S)){
 
-        currentlyPassingCar = car_S;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-        vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-        currentlyPassingCar = no_Car;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          currentlyPassingCar = car_S;
+          xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
+          currentlyPassingCar = no_Car;
+          xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+
+        }
 
       }
 
     }
-
+    
   }
 
 }
