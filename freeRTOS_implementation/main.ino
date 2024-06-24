@@ -45,6 +45,7 @@ while (1) {
 
   if(currentlyPassingCar.ID == 'X'){
 
+    // letting this car pass
     currentlyPassingCar = car_P;
     xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY)
     vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
@@ -137,7 +138,9 @@ void setup() {
 void loop() {}
 
 
-bool carsDontIntersect(struct Car currentlyPassingCar, struct Car thisCar){
+bool carsDontIntersect(struct Car *currentlyPassingCar, struct Car *thisCar){
+
+  if currentlyPassingCar.currentlLane == 'A' && thisCar.currentlLane == 'B' return true
 
   return false;
 
@@ -177,7 +180,7 @@ void Car_P(void *pvParameters) {
 
       } else {
 
-        if(carsDontIntersect(currentlyPassingCar, car_P)){
+        if(carsDontIntersect(&currentlyPassingCar, &car_P)){
 
           currentlyPassingCar = car_P;
           xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
