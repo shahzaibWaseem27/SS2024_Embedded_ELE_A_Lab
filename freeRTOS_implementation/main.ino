@@ -83,6 +83,8 @@ QueueHandle_t structQueue;
 
 
 void setup() {
+
+  Serial.begin(9600);
   
   structQueue = xQueueCreate(4, sizeof(struct Car));
 
@@ -97,38 +99,38 @@ void setup() {
 
   );
 
-  xTaskCreate(
+  // xTaskCreate(
 
-    Car_Q,
-    "Car Q",
-    128,
-    NULL,
-    2,
-    NULL
+  //   Car_Q,
+  //   "Car Q",
+  //   128,
+  //   NULL,
+  //   2,
+  //   NULL
 
-  );
+  // );
 
-  xTaskCreate(
+  // xTaskCreate(
 
-    Car_R,
-    "Car R",
-    128,
-    NULL,
-    2,
-    NULL
+  //   Car_R,
+  //   "Car R",
+  //   128,
+  //   NULL,
+  //   2,
+  //   NULL
 
-  );
+  // );
 
-  xTaskCreate(
+  // xTaskCreate(
 
-    Car_S,
-    "Car S",
-    128,
-    NULL,
-    3,
-    NULL
+  //   Car_S,
+  //   "Car S",
+  //   128,
+  //   NULL,
+  //   3,
+  //   NULL
 
-  );
+  // );
 
 }
 
@@ -160,16 +162,18 @@ void Car_P(void *pvParameters) {
 
   while (1) {
 
-    if(xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY) == pdPASS){  // get up-to-date contents of currently passing car
+    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY);  // get up-to-date contents of currently passing car
 
 
       if(currentlyPassingCar.ID == 'X'){
 
+      Serial.println("Car P is passing ... \n");
       currentlyPassingCar = car_P;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
       vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
       currentlyPassingCar = no_Car;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+      Serial.println("Car P has passed. \n");
 
       } else {
 
@@ -184,8 +188,6 @@ void Car_P(void *pvParameters) {
         }
 
       }
-
-    }
 
   }
 
@@ -211,7 +213,7 @@ void Car_Q(void *pvParameters) {
 
   while (1) {
 
-    if(xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY) == pdPASS){  // get up-to-date contents of currently passing car
+    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY);  // get up-to-date contents of currently passing car
 
       if(currentlyPassingCar.ID == 'X'){
 
@@ -235,8 +237,6 @@ void Car_Q(void *pvParameters) {
 
       }
 
-    } 
-
   }
 
 }
@@ -259,7 +259,7 @@ void Car_R(void *pvParameters) {
 
   while (1) {
 
-    if(xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY) == pdPASS){  // get up-to-date contents of currently passing car
+    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY); // get up-to-date contents of currently passing car
 
       if(currentlyPassingCar.ID == 'X'){
 
@@ -282,8 +282,6 @@ void Car_R(void *pvParameters) {
         }
 
       }
-
-    }
 
   }
 
@@ -308,7 +306,7 @@ void Car_S(void *pvParameters) {
 
   while (1) {
 
-    if(xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY) == pdPASS){ // get up-to-date contents of currently passing car
+    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY); // get up-to-date contents of currently passing car
 
       if(currentlyPassingCar.ID == 'X'){
 
@@ -331,8 +329,6 @@ void Car_S(void *pvParameters) {
         }
 
       }
-
-    }
     
   }
 
