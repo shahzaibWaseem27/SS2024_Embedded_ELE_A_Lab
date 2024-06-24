@@ -1,5 +1,6 @@
 #include <Arduino_FreeRTOS.h>
 #include <queue.h>
+#include <stdbool.h>
 
 
 /*
@@ -138,11 +139,46 @@ void setup() {
 void loop() {}
 
 
-bool carsDontIntersect(struct Car *currentlyPassingCar, struct Car *thisCar){
+bool carsIntersect(struct Car currentlyPassingCar, struct Car thisCar) {
+    
 
-  if currentlyPassingCar.currentlLane == 'A' && thisCar.currentlLane == 'B' return true
 
-  return false;
+if (currentlyPassingCar.currentLane == 'A' && currentlyPassingCar.targetLane == 'C' && thisCar.targetLane == 'B') {
+    return true;
+} 
+
+else if (currentlyPassingCar.currentLane == 'A' && currentlyPassingCar.targetLane == 'D' && (thisCar.targetLane == 'B' || thisCar.targetLane == 'C')) {
+    return true;
+} 
+
+else if (currentlyPassingCar.currentLane == 'B' && currentlyPassingCar.targetLane == 'A' && (thisCar.targetLane == 'C' || thisCar.targetLane == 'D')) {
+    return true;
+}
+
+else if (currentlyPassingCar.currentLane == 'B' && currentlyPassingCar.targetLane == 'D' && thisCar.targetLane == 'C') {
+    return true;
+}
+
+else if (currentlyPassingCar.currentLane == 'C' && currentlyPassingCar.targetLane == 'A' && thisCar.targetLane == 'D') {
+    return true;
+}
+
+else if (currentlyPassingCar.currentLane == 'C' && currentlyPassingCar.targetLane == 'B' && (thisCar.targetLane == 'D' || thisCar.targetLane == 'A')) {
+    return true;
+}
+
+else if (currentlyPassingCar.currentLane == 'D' && currentlyPassingCar.targetLane == 'B' && thisCar.targetLane == 'A') {
+    return true;
+}
+
+else if (currentlyPassingCar.currentLane == 'D' && currentlyPassingCar.targetLane == 'C' && (thisCar.targetLane == 'A' || thisCar.targetLane == 'B')) {
+    return true;
+}
+
+else {
+    return false;
+}
+
 
 }
 
