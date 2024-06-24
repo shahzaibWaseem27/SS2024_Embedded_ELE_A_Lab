@@ -140,6 +140,8 @@ void loop() {}
 
 bool carsDontIntersect(struct Car *currentlyPassingCar, struct Car *thisCar){
 
+  // to do
+
   if currentlyPassingCar.currentlLane == 'A' && thisCar.currentlLane == 'B' return true
 
   return false;
@@ -182,11 +184,13 @@ void Car_P(void *pvParameters) {
 
         if(carsDontIntersect(&currentlyPassingCar, &car_P)){
 
+          Serial.println("Car P is passing ... \n");
           currentlyPassingCar = car_P;
           xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
           vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
           currentlyPassingCar = no_Car;
           xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          Serial.println("Car P has passed. \n");
 
         }
 
@@ -220,21 +224,25 @@ void Car_Q(void *pvParameters) {
 
       if(currentlyPassingCar.ID == 'X'){
 
-      currentlyPassingCar = car_Q;
-      xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-      vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-      currentlyPassingCar = no_Car;
-      xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+        Serial.println("Car Q is passing ... \n");
+        currentlyPassingCar = car_Q;
+        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+        vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
+        currentlyPassingCar = no_Car;
+        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+        Serial.println("Car Q has passed. \n");
 
       } else {
 
         if(carsDontIntersect(currentlyPassingCar, car_Q)){
 
+          Serial.println("Car Q is passing ... \n");
           currentlyPassingCar = car_Q;
           xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
           vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
           currentlyPassingCar = no_Car;
           xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          Serial.println("Car Q has passed. \n");
 
         }
 
@@ -266,21 +274,25 @@ void Car_R(void *pvParameters) {
 
       if(currentlyPassingCar.ID == 'X'){
 
-      currentlyPassingCar = car_R;
-      xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-      vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-      currentlyPassingCar = no_Car;
-      xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+        Serial.println("Car R is passing ... \n");
+        currentlyPassingCar = car_R;
+        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+        vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
+        currentlyPassingCar = no_Car;
+        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+        Serial.println("Car R has passed. \n");
 
       } else {
 
         if(carsDontIntersect(currentlyPassingCar, car_R)){
 
+          Serial.println("Car R is passing ... \n");
           currentlyPassingCar = car_R;
           xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
           vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
           currentlyPassingCar = no_Car;
           xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          Serial.println("Car R has passed. \n");
 
         }
 
@@ -313,21 +325,25 @@ void Car_S(void *pvParameters) {
 
       if(currentlyPassingCar.ID == 'X'){
 
+      Serial.println("Car S is passing ... \n");
       currentlyPassingCar = car_S;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
       vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
       currentlyPassingCar = no_Car;
       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+      Serial.println("Car S has passed. \n");
 
       } else {
 
         if(carsDontIntersect(currentlyPassingCar, car_S)){
 
+          Serial.println("Car S is passing ... \n");
           currentlyPassingCar = car_S;
           xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
           vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
           currentlyPassingCar = no_Car;
           xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+          Serial.println("Car S has passed. \n");
 
         }
 
