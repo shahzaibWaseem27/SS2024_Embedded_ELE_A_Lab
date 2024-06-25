@@ -192,9 +192,9 @@ ProcessQueueA=QueueA();
 ProcessQueueB=QueueB();
 ProcessQueueC=QueueC();
 ProcessQueueD=QueueD();
-ProcessValid=Validity();
+
 // List one or more processes to be composed into a system.
-system TProcess,SProcess,ProcessQueueA,ProcessQueueB,ProcessQueueC,ProcessQueueD,ProcessValid;
+system TProcess,SProcess,ProcessQueueA,ProcessQueueB,ProcessQueueC,ProcessQueueD;
 //ProcessValid,</system>
 	<queries>
 		<query>
