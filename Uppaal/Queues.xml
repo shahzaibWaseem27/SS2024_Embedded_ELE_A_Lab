@@ -52,25 +52,25 @@ urgent broadcast chan message;</declaration>
 		<declaration>// Place local declarations here.
 </declaration>
 		<location id="id6" x="93" y="-102">
-			<name x="83" y="-136">queueAIdle</name>
+			<name x="59" y="-136">LaneAIdle</name>
 		</location>
 		<location id="id7" x="-195" y="-102">
-			<name x="-205" y="-136">queueAbusy</name>
+			<name x="-229" y="-136">LaneAbusy</name>
 		</location>
 		<init ref="id6"/>
 		<transition id="id8">
 			<source ref="id7"/>
 			<target ref="id6"/>
-			<label kind="guard" x="-204" y="-34">!((s==2&amp;&amp;t==1) || (s==3&amp;&amp;t==1) || (s==3&amp;&amp;t==2))</label>
-			<label kind="synchronisation" x="-177" y="-89">message?</label>
+			<label kind="guard" x="-255" y="-25">!((s==3 &amp;&amp; t==2) || (s==4 &amp;&amp; t==2) || (s==4 &amp;&amp; t==3))</label>
+			<label kind="synchronisation" x="-178" y="-68">message?</label>
 			<nail x="-42" y="-42"/>
 			<nail x="-42" y="-42"/>
 		</transition>
 		<transition id="id9">
 			<source ref="id6"/>
 			<target ref="id7"/>
-			<label kind="guard" x="-238" y="-170">(s==2&amp;&amp;t==1) || (s==3&amp;&amp;t==1) || (s==3&amp;&amp;t==2)</label>
-			<label kind="synchronisation" x="-177" y="-119">message?</label>
+			<label kind="guard" x="-246" y="-170">(s==3 &amp;&amp; t==2) || (s==4 &amp;&amp; t==2) || (s==4 &amp;&amp; t==3)</label>
+			<label kind="synchronisation" x="-85" y="-127">message?</label>
 		</transition>
 	</template>
 	<template>
