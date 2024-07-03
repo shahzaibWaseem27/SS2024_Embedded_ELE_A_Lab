@@ -160,23 +160,21 @@ bool carsDontIntersect(int currentlyPassingCarLanes, int thisCarLanes){
   for(int i =0;i<4;i++){
     CurrentCarLanesList[3-i]=currentlyPassingCarLanes/pow(10,3-i);
     currentlyPassingCarLanes=currentlyPassingCarLanes%(int)(round(pow(10,3-i)));
-    //Serial.println(CurrentCarLanesList[3-i]);
   }
   int thisCarLanesList[4]={0,0,0,0};
   for(int i =0;i<4;i++){
     thisCarLanesList[3-i]=thisCarLanes/pow(10,3-i);
     thisCarLanes=thisCarLanes%(int)(round(pow(10,3-i)));
-    //Serial.println(thisCarLanesList[3-i]);
   } 
   for(int i=0;i<4;i++){
     for(int j =0;j<4;j++){
       if(CurrentCarLanesList[i]==thisCarLanesList[j]&&thisCarLanesList[j]!=0){
-        Serial.print("found match \n");
+        Serial.print("found conflict \n");
         return false;
       }
     }
   }
-  Serial.print("parallel ok \n");
+  Serial.print("found no conflict\n");
   return true ;
 }
 

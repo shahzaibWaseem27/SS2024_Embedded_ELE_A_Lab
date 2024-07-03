@@ -35,7 +35,7 @@ else
 send_drive<='0';
 send_stop<='1';
 end if;
-car_ID_out<=car_ID;
+car_ID_out<=card_ID;
 car_source_out<=car_source;
 car_target_out<=car_target;
 end process;

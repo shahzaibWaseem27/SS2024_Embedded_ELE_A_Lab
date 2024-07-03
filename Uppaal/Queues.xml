@@ -188,13 +188,13 @@ urgent broadcast chan message;</declaration>
 	<system>// Place template instantiations here.
 TProcess = Tgenerator();
 SProcess= Sgenerator();
-ProcessQueueA=QueueA();
-ProcessQueueB=QueueB();
-ProcessQueueC=QueueC();
-ProcessQueueD=QueueD();
+ProcessQueue1=QueueA();
+ProcessQueue2=QueueB();
+ProcessQueue3=QueueC();
+ProcessQueue4=QueueD();
 
 // List one or more processes to be composed into a system.
-system TProcess,SProcess,ProcessQueueA,ProcessQueueB,ProcessQueueC,ProcessQueueD;
+system TProcess,SProcess,ProcessQueue1,ProcessQueue2,ProcessQueue3,ProcessQueue4;
 //ProcessValid,</system>
 	<queries>
 		<query>
