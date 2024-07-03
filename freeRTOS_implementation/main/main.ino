@@ -140,12 +140,15 @@ Serial.println("Car R task created\n");
 }
 
 void loop() {}
+
+// matrix containing conflict information
 int directions_matrix[4][4][4]={
   {{0},{2},{2,3},{2,3,4}},
   {{3,4,1},{0},{3},{3,4}},
   {{4,1},{4,1,2},{0},{4}},
   {{1},{1,2},{1,2,3},{0}}
 };
+//return a int containing digits representing lanes blocked by the given car source and targer
 int getBlockedLanes(int target,int destination){
   if (target==0||destination==0){return 0;}
   float blocked=0;
@@ -157,6 +160,7 @@ int getBlockedLanes(int target,int destination){
 }
 bool carsDontIntersect(int currentlyPassingCarLanes, int thisCarLanes){
   int CurrentCarLanesList[4]={0,0,0,0};
+  //turns given int back into arrays
   for(int i =0;i<4;i++){
     CurrentCarLanesList[3-i]=currentlyPassingCarLanes/pow(10,3-i);
     currentlyPassingCarLanes=currentlyPassingCarLanes%(int)(round(pow(10,3-i)));
@@ -166,6 +170,7 @@ bool carsDontIntersect(int currentlyPassingCarLanes, int thisCarLanes){
     thisCarLanesList[3-i]=thisCarLanes/pow(10,3-i);
     thisCarLanes=thisCarLanes%(int)(round(pow(10,3-i)));
   } 
+  // loops both arrays searching for matches
   for(int i=0;i<4;i++){
     for(int j =0;j<4;j++){
       if(CurrentCarLanesList[i]==thisCarLanesList[j]&&thisCarLanesList[j]!=0){

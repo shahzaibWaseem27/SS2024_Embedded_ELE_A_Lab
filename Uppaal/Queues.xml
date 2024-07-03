@@ -17,7 +17,7 @@ urgent broadcast chan message;</declaration>
 		<transition id="id2">
 			<source ref="id0"/>
 			<target ref="id1"/>
-			<label kind="guard" x="0" y="8">t==0</label>
+			<label kind="guard" x="0" y="8">t==1</label>
 			<label kind="synchronisation" x="-92" y="-34">message!</label>
 			<nail x="25" y="8"/>
 			<nail x="25" y="8"/>
@@ -25,7 +25,7 @@ urgent broadcast chan message;</declaration>
 		<transition id="id3">
 			<source ref="id0"/>
 			<target ref="id0"/>
-			<label kind="guard" x="-160" y="-63">t&gt;0</label>
+			<label kind="guard" x="-160" y="-63">t&gt;1</label>
 			<label kind="synchronisation" x="-160" y="-46">message!</label>
 			<label kind="assignment" x="-160" y="-29">t = t-1</label>
 			<nail x="-178" y="-17"/>
@@ -34,7 +34,7 @@ urgent broadcast chan message;</declaration>
 		<transition id="id4">
 			<source ref="id1"/>
 			<target ref="id1"/>
-			<label kind="guard" x="145" y="-68">t&lt;3</label>
+			<label kind="guard" x="145" y="-68">t&lt;4</label>
 			<label kind="synchronisation" x="145" y="-51">message!</label>
 			<label kind="assignment" x="145" y="-34">t= t+1</label>
 			<nail x="204" y="-34"/>
@@ -43,7 +43,7 @@ urgent broadcast chan message;</declaration>
 		<transition id="id5">
 			<source ref="id1"/>
 			<target ref="id0"/>
-			<label kind="guard" x="8" y="-68">t==3</label>
+			<label kind="guard" x="8" y="-68">t==4</label>
 			<label kind="synchronisation" x="-92" y="-55">message!</label>
 		</transition>
 	</template>
@@ -52,10 +52,10 @@ urgent broadcast chan message;</declaration>
 		<declaration>// Place local declarations here.
 </declaration>
 		<location id="id6" x="93" y="-102">
-			<name x="59" y="-136">LaneAIdle</name>
+			<name x="59" y="-136">Lane1Idle</name>
 		</location>
 		<location id="id7" x="-195" y="-102">
-			<name x="-229" y="-136">LaneAbusy</name>
+			<name x="-229" y="-136">Lane1busy</name>
 		</location>
 		<init ref="id6"/>
 		<transition id="id8">
@@ -76,16 +76,16 @@ urgent broadcast chan message;</declaration>
 	<template>
 		<name>QueueC</name>
 		<location id="id10" x="-195" y="-102">
-			<name x="-205" y="-136">queueCbusy</name>
+			<name x="-205" y="-136">queue3busy</name>
 		</location>
 		<location id="id11" x="93" y="-102">
-			<name x="83" y="-136">queueCIdle</name>
+			<name x="83" y="-136">queue4Idle</name>
 		</location>
 		<init ref="id11"/>
 		<transition id="id12">
 			<source ref="id10"/>
 			<target ref="id11"/>
-			<label kind="guard" x="-204" y="-34">!((s==0&amp;&amp;t==3) || (s==1&amp;&amp;t==0) || (s==1&amp;&amp;t==3))</label>
+			<label kind="guard" x="-204" y="-34">!((s==1&amp;&amp;t==4) || (s==2&amp;&amp;t==1) || (s==2&amp;&amp;t==4))</label>
 			<label kind="synchronisation" x="-177" y="-89">message?</label>
 			<nail x="-42" y="-42"/>
 			<nail x="-42" y="-42"/>
@@ -93,23 +93,23 @@ urgent broadcast chan message;</declaration>
 		<transition id="id13">
 			<source ref="id11"/>
 			<target ref="id10"/>
-			<label kind="guard" x="-238" y="-170">(s==0&amp;&amp;t==3) || (s==1&amp;&amp;t==0) || (s==1&amp;&amp;t==3)</label>
+			<label kind="guard" x="-238" y="-170">(s==1&amp;&amp;t==4) || (s==2&amp;&amp;t==1) || (s==2&amp;&amp;t==4)</label>
 			<label kind="synchronisation" x="-177" y="-119">message?</label>
 		</transition>
 	</template>
 	<template>
 		<name>QueueD</name>
 		<location id="id14" x="-195" y="-102">
-			<name x="-205" y="-136">queueDbusy</name>
+			<name x="-205" y="-136">queue4busy</name>
 		</location>
 		<location id="id15" x="93" y="-102">
-			<name x="83" y="-136">queueDIdle</name>
+			<name x="83" y="-136">queue4Idle</name>
 		</location>
 		<init ref="id15"/>
 		<transition id="id16">
 			<source ref="id14"/>
 			<target ref="id15"/>
-			<label kind="guard" x="-204" y="-34">!((s==1&amp;&amp;t==0) || (s==2&amp;&amp;t==1) || (s==2&amp;&amp;t==0))</label>
+			<label kind="guard" x="-204" y="-34">!((s==2&amp;&amp;t==1) || (s==3&amp;&amp;t==2) || (s==3&amp;&amp;t==1))</label>
 			<label kind="synchronisation" x="-85" y="-76">message?</label>
 			<nail x="-42" y="-42"/>
 			<nail x="-42" y="-42"/>
@@ -117,23 +117,23 @@ urgent broadcast chan message;</declaration>
 		<transition id="id17">
 			<source ref="id15"/>
 			<target ref="id14"/>
-			<label kind="guard" x="-238" y="-170">(s==1&amp;&amp;t==0) || (s==2&amp;&amp;t==1) || (s==2&amp;&amp;t==0)</label>
+			<label kind="guard" x="-238" y="-170">(s==2&amp;&amp;t==1) || (s==3&amp;&amp;t==2) || (s==3&amp;&amp;t==1)</label>
 			<label kind="synchronisation" x="-85" y="-127">message?</label>
 		</transition>
 	</template>
 	<template>
 		<name>QueueB</name>
 		<location id="id18" x="-195" y="-102">
-			<name x="-205" y="-136">queueBbusy</name>
+			<name x="-205" y="-136">queue2busy</name>
 		</location>
 		<location id="id19" x="93" y="-102">
-			<name x="83" y="-136">queueBIdle</name>
+			<name x="83" y="-136">queue2Idle</name>
 		</location>
 		<init ref="id19"/>
 		<transition id="id20">
 			<source ref="id18"/>
 			<target ref="id19"/>
-			<label kind="guard" x="-204" y="-34">!((s==0&amp;&amp;t==2) || (s==0&amp;&amp;t==3) || (s==3&amp;&amp;t==2))</label>
+			<label kind="guard" x="-204" y="-34">!((s==1&amp;&amp;t==3) || (s==1&amp;&amp;t==4) || (s==4&amp;&amp;t==3))</label>
 			<label kind="synchronisation" x="-177" y="-89">message?</label>
 			<nail x="-42" y="-42"/>
 			<nail x="-42" y="-42"/>
@@ -141,7 +141,7 @@ urgent broadcast chan message;</declaration>
 		<transition id="id21">
 			<source ref="id19"/>
 			<target ref="id18"/>
-			<label kind="guard" x="-238" y="-170">(s==0&amp;&amp;t==2) || (s==0&amp;&amp;t==3) || (s==3&amp;&amp;t==2)</label>
+			<label kind="guard" x="-238" y="-170">(s==1&amp;&amp;t==3) || (s==1&amp;&amp;t==4) || (s==4&amp;&amp;t==3)</label>
 			<label kind="synchronisation" x="-177" y="-119">message?</label>
 		</transition>
 	</template>
@@ -155,7 +155,7 @@ urgent broadcast chan message;</declaration>
 		<transition id="id24">
 			<source ref="id23"/>
 			<target ref="id22"/>
-			<label kind="guard" x="0" y="8">s==0</label>
+			<label kind="guard" x="0" y="8">s==1</label>
 			<label kind="synchronisation" x="-92" y="-34">message!</label>
 			<nail x="25" y="8"/>
 			<nail x="25" y="8"/>
@@ -163,7 +163,7 @@ urgent broadcast chan message;</declaration>
 		<transition id="id25">
 			<source ref="id23"/>
 			<target ref="id23"/>
-			<label kind="guard" x="-160" y="-63">s&gt;0</label>
+			<label kind="guard" x="-160" y="-63">s&gt;1</label>
 			<label kind="synchronisation" x="-160" y="-46">message!</label>
 			<label kind="assignment" x="-160" y="-29">s = s-1</label>
 			<nail x="-178" y="-17"/>
@@ -172,8 +172,8 @@ urgent broadcast chan message;</declaration>
 		<transition id="id26">
 			<source ref="id22"/>
 			<target ref="id22"/>
-			<label kind="guard" x="145" y="-68">s&lt;3</label>
-			<label kind="synchronisation" x="145" y="-51">message!</label>
+			<label kind="guard" x="145" y="-68">s&lt;4</label>
+			<label kind="synchronisation" x="144" y="-51">message!</label>
 			<label kind="assignment" x="145" y="-34">s = s+1</label>
 			<nail x="204" y="-34"/>
 			<nail x="187" y="-85"/>
@@ -181,7 +181,7 @@ urgent broadcast chan message;</declaration>
 		<transition id="id27">
 			<source ref="id22"/>
 			<target ref="id23"/>
-			<label kind="guard" x="8" y="-68">s==3</label>
+			<label kind="guard" x="8" y="-68">s==4</label>
 			<label kind="synchronisation" x="-92" y="-55">message!</label>
 		</transition>
 	</template>
@@ -194,13 +194,12 @@ ProcessQueue3=QueueC();
 ProcessQueue4=QueueD();
 
 // List one or more processes to be composed into a system.
-system TProcess,SProcess,ProcessQueue1,ProcessQueue2,ProcessQueue3,ProcessQueue4;
-//ProcessValid,</system>
+system TProcess,SProcess,ProcessQueue1,ProcessQueue2,ProcessQueue3,ProcessQueue4;</system>
 	<queries>
 		<query>
 			<formula>A[] not deadlock</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-05-25 17:28:08 +0200">
+			<result outcome="success" type="quality" timestamp="2024-07-03 19:55:15 +0200">
 			</result>
 		</query>
 	</queries>
