@@ -16,58 +16,9 @@ Algorithm
       and that of this car don't intersect, then let this car pass
 
 
-=============================
-Task structure
-=============================
-
-
-We have 4 tasks called, Car_P, Car_Q, Car_R, and Car_S
-
-Each of these tasks would follow the following code pattern, taking an example of car P:
-
-struct Car car_P;
-car_P.ID = 'P';
-car_P.currentLane = 'A';
-car_P.targetLane = 'B';
-
-struct Car currentlyPassingCar;
-
-struct Car no_Car;
-no_Car.ID = 'X';
-no_Car.currentLane = 'X';
-no_Car.targetLane = 'X';
-
-while (1) {
-
-  xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY) // get up-to-date contents of currently passing car
-
-  if(currentlyPassingCar.ID == 'X'){
-
-    // letting this car pass
-    currentlyPassingCar = car_P;
-    xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY)
-    vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-    currentlyPassingCar = no_Car;
-    xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY)
-
-  } else {
-
-    if(carsDontIntersect(currentlyPassingCar, car_P)){
-
-      currentlyPassingCar = car_P;
-      xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY)
-      vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-      currentlyPassingCar = no_Car;
-      xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY)
-
-    }
-
-  }
-
-}
-
-
 */
+
+// a Car structure that contains a unique ID, the lane it currently travels on, and the target lane it wishes to merge into
 
 struct Car {
 
@@ -77,15 +28,21 @@ struct Car {
 
 };
 
+// a handle to interface with a queue
 
 QueueHandle_t structQueue;
 
+int currentlyPassingCarBlockedLanes;
+int thisCarBlockedLanes;
 
 void setup() {
 
   Serial.begin(9600);
   
-  structQueue = xQueueCreate(8, sizeof(struct Car));
+  // create a queue for the cars to communicate when any one of them passes
+  // the intersection area, and to check which car is currently passing
+
+  structQueue = xQueueCreate(4, sizeof(struct Car));
 
   Serial.println("Queue created\n");
 
@@ -115,28 +72,6 @@ void setup() {
 
   Serial.println("Car Q task created\n");
 
-  xTaskCreate(
-
-    Car_R,
-    "Car R",
-    128,
-    NULL,
-    1,
-    NULL
-
-  );
-Serial.println("Car R task created\n");
-  // xTaskCreate(
-
-  //   Car_S,
-  //   "Car S",
-  //   128,
-  //   NULL,
-  //   2,
-  //   NULL
-
-  // );
-// Serial.println("Car S task created\n");
 }
 
 void loop() {}
@@ -184,9 +119,59 @@ bool carsDontIntersect(int currentlyPassingCarLanes, int thisCarLanes){
 }
 
 
+void handleCarCheckingBlockedLanes(struct Car* currentlyPassingCar, struct Car* thisCar){
+
+  currentlyPassingCarBlockedLanes=getBlockedLanes(currentlyPassingCar->currentLane,currentlyPassingCar->targetLane);
+
+  switch(thisCar->ID){
+
+    case 'P':
+
+      Serial.print("car P checked currently passing car is ");
+      break;
+
+    case 'Q':
+
+      Serial.print("car Q checked currently passing car is ");
+      break;
+
+  }
+
+ 
+  Serial.print(currentlyPassingCar->ID);
+  Serial.print("\n");
+  Serial.print("currently passing car occupying lanes ");
+  Serial.print(currentlyPassingCarBlockedLanes);
+  Serial.print("\n");
+
+
+  thisCarBlockedLanes =getBlockedLanes(thisCar->currentLane,thisCar->targetLane);
+
+
+  switch(thisCar->ID){
+
+    case 'P':
+
+      Serial.print("car P blocks the following lanes: ");
+      break;
+
+    case 'Q':
+
+      Serial.print("car Q blocks the following lanes: ");
+      break;
+
+  }
+
+  Serial.print(thisCarBlockedLanes);
+  Serial.print("\n");
+
+}
+
 void Car_P(void *pvParameters) {
 
   (void) pvParameters;
+
+  // initialize car P attributes
 
   struct Car car_P;
   car_P.ID = 'P';
@@ -195,7 +180,14 @@ void Car_P(void *pvParameters) {
 
   Serial.println("Initizalized car P\n");
 
+
+  // create an empty struct which would be filled with
+  // information about currently passing car from the queue
+
   struct Car currentlyPassingCar;
+
+  // create a car structure to represent that the lane is free
+  // makes it easier to reset lane back to free
 
   struct Car no_Car;
   no_Car.ID = 'X';
@@ -207,29 +199,38 @@ void Car_P(void *pvParameters) {
 
   while (1) {
 
-    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY);  // get up-to-date contents of currently passing car
+    // get up-to-date contents of currently passing car, and store in
+    // local struct currentlyPassingCar
 
-      int currentlyPassingCarBlockedLanes=getBlockedLanes(currentlyPassingCar.currentLane,currentlyPassingCar.targetLane);
-      Serial.print("car P checked currently passing car is ");
-      Serial.print(currentlyPassingCar.ID);
-      Serial.print("\n");
-      Serial.print("currently passing car occupying lanes ");
-      Serial.print(currentlyPassingCarBlockedLanes);
-      Serial.print("\n");
-      int car_pBlockedLanesget=getBlockedLanes(car_P.currentLane,car_P.targetLane);
-      Serial.print("car p occupying lanes ");
-      Serial.print(car_pBlockedLanesget);
-      Serial.print("\n");
-      if(currentlyPassingCar.ID == 'X' || carsDontIntersect(currentlyPassingCarBlockedLanes,car_pBlockedLanesget )){
+    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY);
+
+      // prints the blocking lanes of currently passing car, and car P
+
+      handleCarCheckingBlockedLanes(&currentlyPassingCar, &car_P);  
+
+      // if lanes are free, or if the currently passing car's path doesn't intersect with car P's path
+      if(currentlyPassingCar.ID == 'X' || carsDontIntersect(currentlyPassingCarBlockedLanes,thisCarBlockedLanes)){
 
         Serial.println("Car P is passing ... \n");
+
+        // set currently passing car to car P
         currentlyPassingCar = car_P;
+
+        // send currentlyPassingCar's contents to the queue for the other car to receive and work with up-to-date knowledge
         xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+
         vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
         Serial.println("Car P has passed. \n");
+
+        // reset currently passing car back to being free
         currentlyPassingCar = no_Car;
+        
+        // send currentlyPassingCar's contents to the queue for the other car to receive and work with up-to-date knowledge
         xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-        vTaskDelay( 1000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
+
+
+        // delay to avoid this car immediately checking if lane is free which could cause the other car to starve
+        vTaskDelay( 1000 / portTICK_PERIOD_MS );
         
 
       } 
@@ -244,6 +245,8 @@ void Car_Q(void *pvParameters) {
 
   (void) pvParameters;
 
+  // initialize car Q attributes
+
   struct Car car_Q;
   car_Q.ID = 'Q';
   car_Q.currentLane = 3;
@@ -251,141 +254,61 @@ void Car_Q(void *pvParameters) {
 
   Serial.println("Initizalized car Q\n");
 
+  // create an empty struct which would be filled with
+  // information about currently passing car from the queue
+
   struct Car currentlyPassingCar;
-  struct Car peekedCar;
+
+  // create a car structure to represent that the lane is free
+  // makes it easier to reset lane back to free
+
   struct Car no_Car;
   no_Car.ID = 'X';
   no_Car.currentLane = 0;
   no_Car.targetLane = 0;
-  Serial.print("set car to none \n");
+
+  // initialize lanes as free once
+
   currentlyPassingCar = no_Car;
   xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
 
   while (1) {
+    
+    // get up-to-date contents of currently passing car, and store in
+    // local struct currentlyPassingCar
 
-    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY);  // get up-to-date contents of currently passing car
-      int currentlyPassingCarBlockedLanes=getBlockedLanes(currentlyPassingCar.currentLane,currentlyPassingCar.targetLane);
-      Serial.print("car Q checked currently passing car is ");
-      Serial.print(currentlyPassingCar.ID);
-      Serial.print("\n");
-      Serial.print("currently passing car occupying lanes ");
-      Serial.print(currentlyPassingCarBlockedLanes);
-      Serial.print("\n");
-      int car_QBlockedLanesget=getBlockedLanes(car_Q.currentLane,car_Q.targetLane);
-      Serial.print("car Q occupying lanes ");
-      Serial.print(car_QBlockedLanesget);
-      Serial.print("\n");
+    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY);
       
-      if(currentlyPassingCar.ID == 'X' || carsDontIntersect(currentlyPassingCarBlockedLanes,car_QBlockedLanesget)){
+      // prints the blocking lanes of currently passing car, and car Q
+
+      handleCarCheckingBlockedLanes(&currentlyPassingCar, &car_Q);
+      
+      // if lanes are free, or if the currently passing car's path doesn't intersect with car Q's path
+      if(currentlyPassingCar.ID == 'X' || carsDontIntersect(currentlyPassingCarBlockedLanes,thisCarBlockedLanes)){
 
         Serial.println("Car Q is passing ... \n");
+
+        // set currently passing car to car Q
         currentlyPassingCar = car_Q;
+
+        // send currentlyPassingCar's contents to the queue for the other car to receive and work with up-to-date knowledge
         xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
+
         vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
         Serial.println("Car Q has passed. \n");
+
+        // reset currently passing car back to being free
         currentlyPassingCar = no_Car;
+
+        // send currentlyPassingCar's contents to the queue for the other car to receive and work with up-to-date knowledge
         xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-        vTaskDelay( 1000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
+
+        // delay to avoid this car immediately checking if lane is free which could cause the other car to starve
+        vTaskDelay( 1000 / portTICK_PERIOD_MS );
 
       } 
 
     }
 
   }
-
-void Car_R(void *pvParameters) {
-// Serial.print("car r is running");
-  (void) pvParameters;
-
-  struct Car car_R;
-  car_R.ID = 'R';
-  car_R.currentLane = 4;
-  car_R.targetLane = 2;
-
-  Serial.println("Initizalized car R\n");
-
-  struct Car currentlyPassingCar;
-  struct Car peekedCar;
-  struct Car no_Car;
-  no_Car.ID = 'X';
-  no_Car.currentLane = 0;
-  no_Car.targetLane = 0;
-  Serial.print("set car to none \n");
-  currentlyPassingCar = no_Car;
-  xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-
-  while (1) {
-
-    xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY);  // get up-to-date contents of currently passing car
-      int currentlyPassingCarBlockedLanes=getBlockedLanes(currentlyPassingCar.currentLane,currentlyPassingCar.targetLane);
-      Serial.print("car R checked currently passing car is ");
-      Serial.print(currentlyPassingCar.ID);
-      Serial.print("\n");
-      Serial.print("currently passing car occupying lanes ");
-      Serial.print(currentlyPassingCarBlockedLanes);
-      Serial.print("\n");
-      int car_RBlockedLanesget=getBlockedLanes(car_R.currentLane,car_R.targetLane);
-      Serial.print("car R occupying lanes ");
-      Serial.print(car_RBlockedLanesget);
-      Serial.print("\n");
-      
-      if(currentlyPassingCar.ID == 'X' || carsDontIntersect(currentlyPassingCarBlockedLanes,car_RBlockedLanesget)){
-
-        Serial.println("Car R is passing ... \n");
-        currentlyPassingCar = car_R;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-        vTaskDelay( 2000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-        Serial.println("Car R has passed. \n");
-        currentlyPassingCar = no_Car;
-        xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-        vTaskDelay( 1000 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-
-      } 
-
-    }
-
-  }
-
-// void Car_S(void *pvParameters) {
-//   Serial.print("car s is running");
-
-  // (void) pvParameters;
-
-  // struct Car car_S;
-  // car_S.ID = 'S';
-  // car_S.currentLane = 0;
-  // car_S.targetLane = 0;
-
-  // Serial.println("Initizalized car S\n");
-
-  // struct Car currentlyPassingCar;
-
-  // struct Car no_Car;
-  // no_Car.ID = 'X';
-  // no_Car.currentLane = 0;
-  // no_Car.targetLane = 0;
-
-  // currentlyPassingCar = no_Car;
-  // xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-
-  // while (1) {
-
-  //   xQueueReceive(structQueue, &currentlyPassingCar, portMAX_DELAY);  // get up-to-date contents of currently passing car
-
-  //     if(currentlyPassingCar.ID == 'X' || carsDontIntersect(&currentlyPassingCar, &car_S)){
-
-  //       Serial.println("Car S is passing ... \n");
-  //       currentlyPassingCar = car_S;
-  //       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-  //       vTaskDelay( 3800 / portTICK_PERIOD_MS ); // car takes 2 seconds to pass
-  //       currentlyPassingCar = no_Car;
-  //       xQueueSend(structQueue, &currentlyPassingCar, portMAX_DELAY);
-  //       Serial.println("Car S has passed. \n");
-
-  //     } 
-
-  //   }
-
-  // }
-
 
